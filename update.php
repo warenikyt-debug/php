@@ -19,17 +19,13 @@ if ($id <= 0 || !in_array($action, ['view', 'like'])) {
 
 if ($action === 'view') {
     $pdo->prepare("UPDATE images SET views = views + 1 WHERE id = ?")->execute([$id]);
-    $stmt = $pdo->prepare("SELECT views FROM images WHERE id = ?");
-    $stmt->execute([$id]);
-    $views = $stmt->fetchColumn();
+    $views = $pdo->prepare("SELECT views FROM images WHERE id = ?")->execute([$id]) ? $pdo->query("SELECT views FROM images WHERE id = $id")->fetchColumn() : 0;
     echo json_encode(['success' => true, 'views' => $views]);
 }
 
 if ($action === 'like') {
     $pdo->prepare("UPDATE images SET likes = likes + 1 WHERE id = ?")->execute([$id]);
-    $stmt = $pdo->prepare("SELECT likes FROM images WHERE id = ?");
-    $stmt->execute([$id]);
-    $likes = $stmt->fetchColumn();
+    $likes = $pdo->prepare("SELECT likes FROM images WHERE id = ?")->execute([$id]) ? $pdo->query("SELECT likes FROM images WHERE id = $id")->fetchColumn() : 0;
     echo json_encode(['success' => true, 'likes' => $likes]);
 }
 ?>
