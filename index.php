@@ -103,6 +103,7 @@
             <div class="nav-links">
                 <a href="gallery.php" class="gallery">🖼️ Галерея</a>
                 <a href="upload.php">📤 Загрузить фото</a>
+                <a href="reviews.php">📝 Отзывы</a>
             </div>
             <hr>
             <form method="POST" action="calculator.php">
