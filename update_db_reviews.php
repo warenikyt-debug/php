@@ -15,12 +15,30 @@ $sql = "CREATE TABLE IF NOT EXISTS reviews (
 $pdo->exec($sql);
 echo "✅ Таблица 'reviews' создана<br>";
 
-// Проверяем структуру
-$columns = $pdo->query("PRAGMA table_info(reviews)")->fetchAll();
-echo "<h3>Структура таблицы reviews:</h3>";
-foreach ($columns as $col) {
-    echo $col['name'] . " — " . $col['type'] . "<br>";
+// Добавим тестовые отзывы для демонстрации
+$count = $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn();
+if ($count == 0) {
+    $testReviews = [
+        ['Иван', 'Отличный калькулятор! Очень удобно считать сложные функции.', 5],
+        ['Мария', 'Функция Аккермана работает, но медленно для больших чисел.', 4],
+        ['Петр', 'Хороший проект, всё понятно и наглядно.', 5],
+        ['Анна', 'Галерея отличная, лайки работают!', 5],
+        ['Дмитрий', 'Можно добавить больше математических функций.', 3],
+    ];
+    
+    $stmt = $pdo->prepare("INSERT INTO reviews (author, text, rating) VALUES (?, ?, ?)");
+    foreach ($testReviews as $review) {
+        $stmt->execute($review);
+    }
+    echo "✅ Добавлено " . count($testReviews) . " тестовых отзывов<br>";
 }
+
+// Проверяем статистику
+$avgAll = $pdo->query("SELECT AVG(rating) as avg FROM reviews")->fetch(PDO::FETCH_ASSOC);
+$total = $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn();
+echo "<h3>Статистика:</h3>";
+echo "<p>Всего отзывов: $total</p>";
+echo "<p>Средняя оценка: " . round($avgAll['avg'] ?? 0, 1) . "</p>";
 
 echo "<p><a href='reviews.php'>Перейти к отзывам</a></p>";
 ?>
